@@ -1,0 +1,27 @@
+import {Window} from 'happy-dom';
+import {createRoot} from 'react-dom/client';
+import {flushSync} from 'react-dom';
+import LinkInsight from '../src/components/LinkInsight';
+import type {Bookmark} from '../src/types';
+const window=new Window({url:'https://aklik-deployer-werkzeugkasten.bonnydace1.chatgpt.site/bookmarks/'});
+for(const [name,value]of Object.entries({window,document:window.document,navigator:window.navigator,localStorage:window.localStorage,location:window.location,HTMLElement:window.HTMLElement}))Object.defineProperty(globalThis,name,{value,configurable:true,writable:true});
+const host=window.document.createElement('div');window.document.body.append(host);const root=createRoot(host as any);
+function assert(ok:unknown,message:string){if(!ok)throw Error(message);}
+let retries=0;
+const bookmark:Bookmark={id:'one',url:'https://excalidraw.com/',title:'Whiteboard',added:0,tags:[],categoryIds:[],pinned:false};
+flushSync(()=>root.render(<LinkInsight bookmark={bookmark} checking={false} retry={()=>retries++}/>));
+const toggle=host.querySelector('.insight-toggle')!;
+assert(toggle.getAttribute('aria-expanded')==='false','Drawer starts closed');
+assert(host.querySelector('.insight-drawer')?.hasAttribute('inert'),'Closed drawer removes hidden actions from keyboard navigation');
+assert(host.querySelector('[role=status]')?.textContent==='Online öffnen','Known browser access is labelled truthfully');
+flushSync(()=>toggle.dispatchEvent(new window.MouseEvent('click',{bubbles:true})));
+assert(toggle.getAttribute('aria-expanded')==='true'&&!host.querySelector('.insight-drawer')?.hasAttribute('inert'),'Toggle opens accessible drawer');
+assert(host.querySelector('a')?.getAttribute('href')==='https://excalidraw.com/','Official browser action is real');
+const retry=host.querySelector('.insight-actions button')!;flushSync(()=>retry.dispatchEvent(new window.MouseEvent('click',{bubbles:true})));
+assert(retries===1,'Retry reaches the actual enrichment action');
+flushSync(()=>root.render(<LinkInsight bookmark={{...bookmark,url:'http://127.0.0.1/private',title:'<img src=x onerror=alert(1)>'}} checking={true} retry={()=>retries++}/>));
+assert(host.querySelector('[role=status]')?.textContent==='Wird geprüft','Checking is readable text');
+assert(!host.querySelector('a')&&!host.querySelector('img'),'Private URLs are not sent to the companion, imported titles do not become HTML');
+assert(host.querySelector('button[disabled]'),'Retry is disabled during an active check');
+root.unmount();await window.happyDOM.abort();window.close();
+console.log(JSON.stringify({passed:true,checks:9,visualProof:false,component:'LinkInsight'}));

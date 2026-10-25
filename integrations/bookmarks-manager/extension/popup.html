@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        width: 320px;
+        font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+        font-size: 13px;
+        background: #101318;
+        color: #e7ebf1;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        background: #15191f;
+        border-bottom: 1px solid #262c37;
+      }
+      header .logo { font-size: 14px; color: #6f95e8; }
+      header h1 { font-size: 12.5px; margin: 0; font-weight: 640; }
+      header h1 span { color: #6f95e8; font-weight: 520; }
+      main { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+      .page-title { font-weight: 580; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .page-url { color: #98a3b3; font-family: Consolas, monospace; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      button {
+        border: 0;
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-size: 13px;
+        font-weight: 560;
+        cursor: pointer;
+        background: #4d7dd8;
+        color: #fff;
+        transition: background 0.14s;
+      }
+      button:hover { background: #5d89de; }
+      button:disabled { opacity: 0.55; cursor: default; }
+      button.secondary { background: #1c212a; color: #e7ebf1; border: 1px solid #262c37; font-weight: 520; }
+      .cats { display: flex; flex-wrap: wrap; gap: 5px; }
+      .chip { border: 1px solid #262c37; background: #1c212a; color: #98a3b3; border-radius: 20px; padding: 2px 9px; font-size: 11px; }
+      .msg { padding: 8px 10px; border-radius: 7px; font-size: 12.5px; }
+      .msg.ok { background: rgba(111, 149, 232, 0.12); border: 1px solid rgba(111, 149, 232, 0.35); }
+      .msg.warn { background: rgba(224, 179, 76, 0.1); border: 1px solid rgba(224, 179, 76, 0.3); }
+      .recent { border-top: 1px solid #262c37; padding-top: 10px; }
+      .recent h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #6b7686; margin: 0 0 6px; }
+      .recent a { display: block; color: #e7ebf1; text-decoration: none; padding: 3.5px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .recent a:hover { color: #6f95e8; }
+      footer { padding: 0 12px 12px; }
+      footer a { color: #6f95e8; text-decoration: none; font-size: 12.5px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="logo">🔖</span>
+      <h1>Bookmarks <span>Dynamic Manager</span></h1>
+    </header>
+    <main>
+      <div>
+        <div class="page-title" id="pageTitle">Lese aktuelle Seite …</div>
+        <div class="page-url" id="pageUrl"></div>
+      </div>
+      <button id="save">★ Diese Seite speichern</button>
+      <div id="result"></div>
+      <div id="cats" class="cats"></div>
+      <div class="recent" id="recent" hidden>
+        <h3>Zuletzt hinzugefügt</h3>
+        <div id="recentList"></div>
+      </div>
+    </main>
+    <footer><a href="#" id="openManager">🗂️ Manager öffnen …</a></footer>
+    <script type="module" src="./popup.ts"></script>
+  </body>
+</html>
