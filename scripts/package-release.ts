@@ -1,4 +1,4 @@
-import {mkdir,readFile,readdir} from 'node:fs/promises';
+import {mkdir,readFile,readdir,stat} from 'node:fs/promises';
 import {resolve,join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {zipSync,unzipSync} from 'fflate';
@@ -26,7 +26,7 @@ await add('Lizenzen/bun-LICENSE.md',join(out,'bun-LICENSE.md'));
 const linux=join(root,'.data/linux-target/release/bundle/deb/aKlik-Deployer_1.0.0_amd64.deb');
 if(await Bun.file(linux).exists())await add('Linux/aKlik-Deployer_1.0.0_amd64.deb',linux);
 const mac=join(out,'mac');
-if(await Bun.file(mac).exists())for(const name of await readdir(mac))if(name.endsWith('.dmg')||name.endsWith('.app.tar.gz'))await add('macOS/'+name,join(mac,name));
+if((await stat(mac).catch(()=>null))?.isDirectory())for(const name of await readdir(mac))if(name.endsWith('.dmg')||name.endsWith('.app.tar.gz'))await add('macOS/'+name,join(mac,name));
 files['ZUERST-LESEN.txt']=new TextEncoder().encode(`aKlik-Deployer 1.0.0 – Gesamtpaket\n\n1. Windows: Windows/aKlik-Deployer_1.0.0_x64-setup.exe installieren.\n   Oder Windows/aKlik-Deployer-portable.exe starten (Browser-Oberfläche).\n2. Benutzerhandbuch: Dokumentation/Benutzerhandbuch.pdf oder .html öffnen.\n3. Browser-Erweiterungen: ZIP entpacken, dann nach Handbuch laden.\n4. Vollständiger Quellcode: Quellcode/aKlik-Deployer-Quellcode.zip entpacken.\n5. Web: https://aklik-deployer.pages.dev\n6. Updates: https://github.com/Johi251/aKlik-Deployer/releases\n\nWindows-Pakete sind unsigniert. Firefox-Paket ist temporär ladbar.\nKeine persönlichen Daten, Geheimwerte oder node_modules enthalten.\nAbhängigkeiten werden für eigene Builds nach bun.lock installiert.\nLokale Docker-Funktionen benötigen Docker. Safari-Paket nicht enthalten.\nLinux-DEB wurde unter Ubuntu 26.04 gebaut.\nKommerzielle Bedingungen und Fremdlizenzen: Dokumentation/KOMMERZIELLE-NUTZUNG.md.\n`);
 const sums=Object.entries(files).sort(([a],[b])=>a.localeCompare(b)).map(([name,data])=>createHash('sha256').update(data).digest('hex')+'  '+name).join('\n')+'\n';
 files['SHA256SUMS.txt']=new TextEncoder().encode(sums);
