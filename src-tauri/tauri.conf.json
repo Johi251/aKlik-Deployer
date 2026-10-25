@@ -1,0 +1,9 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "aKlik-Deployer",
+  "version": "1.0.0",
+  "identifier": "app.aklik.deployer",
+  "build": {"beforeBuildCommand": "bun run prepare:desktop", "beforeDevCommand": "bun run prepare:desktop", "frontendDist": "../public"},
+  "app": {"windows": [], "security": {"csp": "default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'", "capabilities": []}},
+  "bundle": {"active": true, "targets": "all", "externalBin": ["binaries/aklik-engine"], "icon": ["icons/icon.png", "icons/icon.ico", "icons/icon.icns"], "shortDescription": "Repositories verstehen und starten", "category": "DeveloperTool", "windows": {"nsis": {"displayLanguageSelector": true, "languages": ["German", "English"]}}}
+}

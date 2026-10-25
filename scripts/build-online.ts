@@ -1,0 +1,47 @@
+import {zipSync} from "fflate";
+import { mkdir, readdir, cp, readFile } from "node:fs/promises";
+import { join, resolve, relative } from "node:path";
+import { buildMotion } from "./build-motion";
+import { motionStyleHash } from "../src/motion-policy";
+import {sourceFiles} from './source-files';
+
+const root = resolve(import.meta.dir, ".."), target = join(root, "sites/aklik-deployer-online"), dist = join(target, "dist");
+await mkdir(dist, { recursive: true });
+const build = await Bun.build({ entrypoints: [join(root, "src/web/app.ts")], target: "browser", minify: true });
+if (!build.success) throw new Error(build.logs.map(l => l.message).join("\n"));
+await Bun.write(join(dist, "app.js"), build.outputs[0]!);
+await buildMotion(join(dist,"workflow.js"));
+let html = await Bun.file(join(root, "public/index.html")).text();
+const policy = `default-src 'self'; script-src 'self'; style-src 'self' ${motionStyleHash}; img-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://huggingface.co https://openrouter.ai; object-src 'none'; base-uri 'none'; form-action 'self'`;
+html = html.replace("<body", '<body data-mode="online"').replace("<head>", `<head>\n<meta http-equiv="Content-Security-Policy" content="${policy}">\n<meta name="referrer" content="no-referrer">`);
+html = html.replace("<title>aKlik-Deployer · Erst finden. Dann starten.</title>", "<title>aKlik-Deployer Online · Tools, Repositories und KI-Modelle</title>");
+await Bun.write(join(dist, "index.html"), html);
+const deploymentConfig=await Bun.file(join(root,'vercel.json')).json();
+await Bun.write(join(dist,'vercel.json'),JSON.stringify({framework:null,buildCommand:null,installCommand:null,outputDirectory:'.',headers:deploymentConfig.headers},null,2));
+await Bun.write(join(dist,'_headers'),'/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: no-referrer\n  X-Frame-Options: DENY\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n/sw.js\n  Cache-Control: no-cache\n');
+await cp(join(root,'docs'),join(dist,'docs'),{recursive:true});
+await Bun.write(join(dist, "style.css"), Bun.file(join(root, "public/style.css")));
+await Bun.write(join(dist, "landing.css"), Bun.file(join(root, "public/landing.css")));
+await mkdir(join(dist, "fonts"), { recursive: true });
+await Bun.write(join(dist, "fonts/ibm-plex-sans-latin.woff2"), Bun.file(join(root, "public/fonts/ibm-plex-sans-latin.woff2")));
+await Bun.write(join(dist, "fonts/OFL.txt"), Bun.file(join(root, "public/fonts/OFL.txt")));
+await Bun.write(join(dist, "fonts/manrope-latin.woff2"), Bun.file(join(root,"public/fonts/manrope-latin.woff2")));
+await Bun.write(join(dist, "fonts/Manrope-OFL.txt"), Bun.file(join(root,"public/fonts/Manrope-OFL.txt")));
+await Bun.write(join(dist, "favicon.svg"), Bun.file(join(root, "public/favicon.svg")));
+for(const name of ["manifest.webmanifest","sw.js","icon-192.png","icon-512.png","licenses.txt"])await Bun.write(join(dist,name),Bun.file(join(root,"public",name)));
+await Bun.write(join(dist, "QUELLENHINWEISE.md"), Bun.file(join(root, "THIRD_PARTY_NOTICES.md")));
+await cp(join(root,"integrations/bookmarks-manager/dist"),join(dist,"bookmarks"),{recursive:true});
+await mkdir(join(dist,"downloads"),{recursive:true});
+const release=join(root,".data/releases");
+const windows=await Bun.file(join(release,"windows.json")).json();
+for(const name of ["windows.json","bookmarks-chrome.zip","bookmarks-firefox.zip",...['chrome','edge','brave','opera','vivaldi','firefox'].map(b=>'aklik-deployer-'+b+'.zip'),"aklik-deployer-bookmarks.txt",...windows.parts.map((p:{name:string})=>p.name)]) {
+  if(!/^(windows\.json|(?:bookmarks|aklik-deployer)-(chrome|edge|brave|opera|vivaldi|firefox)\.zip|aklik-deployer-bookmarks\.txt|aklik-deployer-windows\.part\d+)$/.test(name))throw Error("Unerwartete Download-Datei.");
+  await Bun.write(join(dist,"downloads",name),Bun.file(join(release,name)));
+}
+const zipFiles=await sourceFiles(root);
+const zip=join(dist,"aklik-deployer-local.zip");await Bun.write(zip,zipSync(zipFiles,{level:6}));
+await Bun.write(join(target, "README.md"), "# aKlik-Deployer Online\n\nStatische Browser-Version aus dem übergeordneten aKlik-Deployer-Projekt. Öffentliche Quellen werden direkt im Browser abgefragt. Verlauf, Merkliste und Modellvorschläge verbleiben im Browserspeicher. Keine lokale Docker-Steuerung, keine Schlüssel und keine Benutzerdaten im Hosting-Artefakt.\n\nBuild: im übergeordneten Projekt `bun run build:online`. Das Verzeichnis dist enthält den geprüften Browser-Build und das Downloadpaket der lokalen Version.\n");
+await Bun.write(join(target, ".gitignore"), "node_modules/\n.env\n*.log\n");
+const bundle = await Bun.file(join(dist, "app.js")).text();
+if (/bun:sqlite|node:child_process|oc_session=/.test(bundle)) throw new Error("Lokale Laufzeit oder Sitzungswert im Online-Bundle gefunden.");
+console.log(JSON.stringify({ directory: dist, browserBytes: Bun.file(join(dist,"app.js")).size, downloadBytes: Bun.file(zip).size, sourceDataIncluded: false }, null, 2));

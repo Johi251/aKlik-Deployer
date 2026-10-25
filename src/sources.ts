@@ -1,0 +1,20 @@
+import type { Source } from "./types";
+export const sources: Source[] = [
+  { id: "github", name: "GitHub", url: "https://github.com/", kind: "github", purpose: "Öffentliche Repository-Suche" },
+  { id: "awesome", name: "Awesome Lists", url: "https://github.com/topics/awesome", feed: "https://raw.githubusercontent.com/sindresorhus/awesome/main/readme.md", kind: "markdown", purpose: "Einstieg zu thematischen Listen" },
+  { id: "selfhosted", name: "Awesome Selfhosted", url: "https://github.com/awesome-selfhosted/awesome-selfhosted", feed: "https://raw.githubusercontent.com/awesome-selfhosted/awesome-selfhosted/master/README.md", kind: "markdown", purpose: "Selbst betreibbare Anwendungen" },
+  { id: "saas-alternatives", name: "Open SaaS Alternatives", url: "https://github.com/open-saas-directory/awesome-saas-directory", feed: "https://raw.githubusercontent.com/open-saas-directory/awesome-saas-directory/main/README.md", kind: "markdown", purpose: "Alternativen zu bekannten Produkten; Lizenz und externe Dienste separat prüfen" },
+  { id: "free-for-dev", name: "Free for Dev", url: "https://free-for.dev/", feed: "https://raw.githubusercontent.com/ripienaar/free-for-dev/master/README.md", kind: "markdown", purpose: "Dienste mit kostenlosen Tarifen" },
+  { id: "free-for-dev-com", name: "Free-for-dev.com", url: "https://free-for-dev.com/en/", kind: "directory", purpose: "Weitere Fundstelle für Gratis-Tarife" },
+  { id: "public-apis", name: "Public APIs", url: "https://github.com/public-apis/public-apis", feed: "https://raw.githubusercontent.com/public-apis/public-apis/master/README.md", kind: "markdown", purpose: "API-Bausteine" },
+  { id: "itsfree", name: "It's free", url: "https://itsfree.dev/", kind: "directory", purpose: "Tools und Gratis-Tarife" },
+  { id: "nosignups", name: "NoSignups", url: "https://nosignups.net/", kind: "directory", purpose: "Werkzeuge ohne Anmeldung; Einträge prüfen" },
+  { id: "vibecodedit", name: "Vibe Coded It", url: "https://vibecodedit.com/", kind: "directory", purpose: "Vorhandene Apps entdecken" },
+  { id: "isitvibecoded", name: "Is It Vibe Coded", url: "https://isitvibecoded.com/", kind: "reference", purpose: "Rolle als Toolkatalog noch ungeprüft" },
+  { id: "canivibecodeit", name: "Can I Vibecode It", url: "https://canivibecodeit.com/alternatives", kind: "directory", purpose: "Produkte und Alternativen" },
+  { id: "deepwiki", name: "DeepWiki", url: "https://deepwiki.com/", kind: "reference", purpose: "Repo-Dokumentation; für ausgewählte Repos verlinkt" },
+  { id: "prompthero", name: "PromptHero", url: "https://prompthero.com/", kind: "reference", purpose: "Prompts und Medien-Inspiration" },
+  { id: "devto", name: "DEV Community", url: "https://dev.to/", kind: "directory", purpose: "Projektvorstellungen auf der aktuellen Startseite" },
+  { id: "liltask", name: "LilTask", url: "https://liltask.cc/", kind: "reference", purpose: "Einzelnes Listen-/Aufgabenprodukt" },
+  { id: "getlatka", name: "GetLatka", url: "https://getlatka.com/saas-companies", kind: "directory", purpose: "SaaS-Namen entdecken; kein Gratis-Nachweis" },
+];

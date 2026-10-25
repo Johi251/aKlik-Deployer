@@ -1,0 +1,50 @@
+{
+  "name": "aklik-deployer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run build && bun src/server.ts",
+    "start": "bun src/server.ts",
+    "build": "bun scripts/build-local.ts",
+    "build:online": "bun scripts/build-online.ts",
+    "check": "tsc --noEmit",
+    "test": "bun test",
+    "verify:live": "bun scripts/verify-live.ts",
+    "verify:research": "bun scripts/verify-research.ts",
+    "verify:docker": "bun scripts/verify-docker.ts",
+    "verify:agent": "bun scripts/verify-agent-package.ts",
+    "verify:design": "bun scripts/verify-design.ts",
+    "setup:railpack": "bun scripts/setup-railpack.ts",
+    "search:up": "bun scripts/setup-search.ts",
+    "build:desktop": "bun scripts/build-desktop.ts",
+    "build:tauri": "tauri build",
+    "dev:tauri": "tauri dev",
+    "build:extension": "bun scripts/build-extension.ts",
+    "build:companion": "bun scripts/build-companion.ts",
+    "prepare:desktop": "bun run build && bun run build:companion && bun scripts/build-sidecar.ts",
+    "release:web": "bun run build && bun run build:companion && bun run build:extension && bun run build:desktop && bun run build:online",
+    "deploy:web": "bun scripts/deploy-web.ts",
+    "verify:platforms": "bun scripts/verify-platforms.ts",
+    "verify:artifacts": "bun scripts/verify-companion-artifacts.ts"
+  },
+  "dependencies": {
+    "@fontsource-variable/ibm-plex-sans": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@remotion/player": "^4.0.538",
+    "ai": "^7.0.153",
+    "fflate": "^0.8.3",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "^4.0.538",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.12.4",
+    "@types/bun": "latest",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "happy-dom": "^21.0.4",
+    "typescript": "latest"
+  }
+}

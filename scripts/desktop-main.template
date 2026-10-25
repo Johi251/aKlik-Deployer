@@ -1,0 +1,29 @@
+__ASSET_IMPORTS__
+import {join} from "node:path";
+import {homedir} from "node:os";
+import {existsSync} from 'node:fs';
+process.env.AKLIK_DEPLOYER_DATA_DIR ||= join(process.env.LOCALAPPDATA??join(homedir(),".local","share"),"aKlik-Deployer");
+const previousData=join(process.env.LOCALAPPDATA??join(homedir(),'.local','share'),['1','Clicker'].join(''));
+if(!existsSync(process.env.AKLIK_DEPLOYER_DATA_DIR)&&existsSync(previousData))process.env.AKLIK_DEPLOYER_DATA_DIR=previousData;
+const {createApp}=await import(__SERVER_PATH__);
+const selfTest=process.argv.includes("--self-test"),embedded=__ASSET_MAP__;
+let server;
+try{server=createApp(selfTest?0:43110,embedded);}catch(e){console.error("aKlik-Deployer konnte nicht starten: "+e.message);process.exit(1);}
+const base="http://127.0.0.1:"+server.port;
+if(selfTest){
+ try{
+  const page=await fetch(base),cookie=page.headers.get("set-cookie")?.split(";")[0]??"",html=await page.text();
+  const health=await fetch(base+"/api/health",{headers:{cookie}}).then(r=>r.json());
+  const bookmarks=await fetch(base+"/bookmarks/"),script=await fetch(base+"/workflow.js"),unauthenticated=await fetch(base+"/api/state");
+  if(!page.ok||!html.includes("view-home")||!bookmarks.ok||!script.ok||unauthenticated.status!==403)throw Error("Lokaler Oberflaechen- oder Sitzungstest fehlgeschlagen.");
+  if(!bookmarks.headers.get("content-type")?.includes("text/html")||!script.headers.get("content-type")?.includes("javascript"))throw Error("Eingebetteter MIME-Typ stimmt nicht.");
+  const csp=bookmarks.headers.get("content-security-policy")??"";
+  if(!["https://api.github.com","https://huggingface.co","https://api.microlink.io"].every(u=>csp.includes(u)))throw Error("Desktop-Metadaten-Verbindung durch CSP blockiert.");
+  console.log(JSON.stringify({passed:true,version:health.version,embeddedAssets:Object.keys(embedded).length,bookmarks:bookmarks.status,motion:script.status,unauthenticated:unauthenticated.status,externalCalls:0}));
+ }finally{server.stop(true);}
+}else if(process.argv.includes('--sidecar')){
+ console.log('AKLIK_READY '+base);
+}else{
+ console.log("aKlik-Deployer ist bereit: "+base+"\nDieses Fenster zum Beenden schliessen. Daten bleiben lokal.");
+ if(!process.argv.includes("--headless")){const args=process.platform==='win32'?["powershell.exe","-NoProfile","-NonInteractive","-Command","Start-Process '"+base+"'"]:process.platform==='darwin'?['open',base]:['xdg-open',base];Bun.spawn(args,{windowsHide:true,stdout:'ignore',stderr:'ignore'});}
+}

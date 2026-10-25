@@ -1,0 +1,42 @@
+name: Desktop builds
+on:
+  workflow_dispatch:
+    inputs:
+      platforms:
+        description: Build selection
+        default: mac
+        type: choice
+        options: [mac, all]
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(github.event_name == 'workflow_dispatch' && inputs.platforms == 'mac' && '["macos-latest","macos-15-intel"]' || '["windows-latest","macos-latest","macos-15-intel","ubuntu-22.04"]') }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - uses: dtolnay/rust-toolchain@stable
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+      - run: bun install --frozen-lockfile
+      - run: bun install --frozen-lockfile
+        working-directory: integrations/bookmarks-manager
+      - run: bun run check
+      - run: bun test
+      - run: bun run build:tauri
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aKlik-Deployer-${{ matrix.os }}
+          path: src-tauri/target/release/bundle/
+          if-no-files-found: error
+          retention-days: 1

@@ -1,0 +1,137 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>aKlik-Deployer · Benutzerhandbuch</title><style>body{font:17px/1.6 system-ui,sans-serif;color:#172033;background:#f4f6fa;margin:0}main{max-width:900px;margin:auto;padding:32px}section{background:white;border:1px solid #d7deeb;border-radius:16px;padding:28px;margin:24px 0;break-inside:avoid}h1,h2{color:#1e40af;line-height:1.2}a{color:#1e40af}li{margin:10px 0}.flow{list-style:none;padding:0;text-align:center}.flow li{border:1px solid #96abe4;background:#eef3ff;padding:12px;border-radius:8px}.flow li+li:before{content:"↓";display:block;color:#1e40af;margin-top:-24px;padding-bottom:8px}.tip{border-left:3px solid #1e40af;padding:12px;background:#eef3ff}nav a{display:block} @media print{body{background:white;font-size:11pt}main{padding:0}section{border:0;break-before:page}nav{display:none}}</style><main><h1>aKlik-Deployer<br>Benutzerhandbuch 1.0.0</h1>
+<p>Web: <a href="https://aklik-deployer.pages.dev">https://aklik-deployer.pages.dev</a><br>Quellcode und Downloads: <a href="https://github.com/Johi251/aKlik-Deployer">https://github.com/Johi251/aKlik-Deployer</a></p><nav>
+<a href="#kapitel-1">1. Dein Werkzeugkasten</a>
+<a href="#kapitel-2">2. Windows installieren und starten</a>
+<a href="#kapitel-3">3. Repository prüfen und Status verstehen</a>
+<a href="#kapitel-4">4. Ein Projekt auf deinem PC starten</a>
+<a href="#kapitel-5">5. Browser-Erweiterung einrichten</a>
+<a href="#kapitel-6">6. Lesezeichen und lokale Status-Badges</a>
+<a href="#kapitel-7">7. Werkzeuge finden und vergleichen</a>
+<a href="#kapitel-8">8. KI-Modelle und Agenten vorbereiten</a>
+<a href="#kapitel-9">9. Daten sichern, aktualisieren und Fehler lösen</a>
+<a href="#kapitel-10">10. Kommerziell nutzen und selbst veröffentlichen</a>
+</nav>
+<section id="kapitel-1"><h2>1. Dein Werkzeugkasten</h2><p>aKlik-Deployer hilft dir, vorhandene Software zu finden, Repository-Links zu prüfen und geeignete Projekte lokal zu starten. Die Web-App, die Windows-App und die Erweiterungen ergänzen sich.</p><ol>
+<li>Für Recherche ohne Installation: Öffne https://aklik-deployer.pages.dev.</li>
+<li>Für lokale Projekte: Installiere die Windows-App aus dem Gesamtpaket.</li>
+<li>Für Status direkt auf einer Repository-Seite: Lade die passende Browser-Erweiterung.</li>
+<li>Bewahre das Gesamtpaket auf. Quellcode, Build-Skripte, Erweiterungen und dieses Handbuch gehören dazu.</li>
+</ol><ol class="flow" aria-label="Ablaufdiagramm">
+<li>Was möchtest du tun?</li>
+<li>Nur recherchieren? → Web-App</li>
+<li>Lokal ausführen? → Windows-App</li>
+<li>Im Browser prüfen? → Add-on + lokale App</li>
+</ol><p class="tip">Die Web-App führt kein Docker auf deinem PC aus. Ein öffentliches Repository ist noch kein Beleg, dass ein fremdes Projekt kostenlos und kommerziell nutzbar ist.</p></section>
+<section id="kapitel-2"><h2>2. Windows installieren und starten</h2><p>Die native Tauri-App öffnet ein eigenes Programmfenster. Die portable EXE stellt dieselben lokalen Funktionen in deinem Standardbrowser bereit. Beide verwenden dieselbe lokale Adresse.</p><ol>
+<li>Entpacke das Gesamtpaket vollständig in einen eigenen Ordner.</li>
+<li>Öffne unter Windows die Datei Windows/aKlik-Deployer_1.0.0_x64-setup.exe für die Installation. Starte danach aKlik-Deployer.</li>
+<li>Alternativ: Starte Windows/aKlik-Deployer-portable.exe. Dafür brauchst du Bun nicht separat.</li>
+<li>Verwende jeweils nur eine der beiden Varianten zur selben Zeit.</li>
+<li>Für Docker-Projekte muss Docker mit Linux-Containern laufen. Die Status-Bridge und Recherche brauchen Docker nicht.</li>
+</ol><ol class="flow" aria-label="Ablaufdiagramm">
+<li>Setup oder portable EXE öffnen</li>
+<li>Lokale Engine startet auf 127.0.0.1:43110</li>
+<li>Oberfläche öffnet sich</li>
+<li>Recherche beginnen; bei Bedarf Docker starten</li>
+</ol><p class="tip">Die Windows-Dateien sind nicht signiert. Prüfe Quelle und SHA256SUMS.txt. Das Handbuch fordert dich nicht auf, Schutzfunktionen abzuschalten. Das native Fenster benötigt WebView2.</p></section>
+<section id="kapitel-3"><h2>3. Repository prüfen und Status verstehen</h2><p>Öffne den Bereich zum Prüfen eines Repository-Links. Füge einen öffentlichen Projekt-Link ein und starte die Analyse. Die Prüfung liest Metadaten und ausgewählte Dateien; sie führt dabei keine fremden Startskripte aus.</p><ol>
+<li>Kopiere die Repository-Adresse von GitHub, GitLab oder einem Hugging-Face-Space.</li>
+<li>Starte die Prüfung und warte auf den Endzustand.</li>
+<li>Grün: Eine erreichbare Demo und eine erkannte Open-Source-Lizenz liegen vor.</li>
+<li>Blau: Ein lokaler Startweg wie Docker, Compose oder ein Startskript wurde erkannt.</li>
+<li>Orange: Die Prüfung läuft. Neutral: Der Startweg oder die Lizenz muss noch geklärt werden.</li>
+</ol><ol class="flow" aria-label="Ablaufdiagramm">
+<li>Öffentlichen Repository-Link eingeben</li>
+<li>Orange: statische Prüfung läuft</li>
+<li>Grün: Demo öffnen | Blau: Startplan ansehen</li>
+<li>Neutral: Hinweise und Originalquelle prüfen</li>
+</ol><p class="tip">Ein Dockerfile beweist noch keinen erfolgreichen Start. Die ausführliche automatische lokale Installation unterstützt GitHub; bei GitLab und Hugging Face bleibt die Ausführung manuell.</p></section>
+<section id="kapitel-4"><h2>4. Ein Projekt auf deinem PC starten</h2><p>Die lokale App zeigt einen Startplan mit Lizenz, Voraussetzungen und möglichen Pflichtangaben. Erst der bewusste Start beauftragt die lokale Engine.</p><ol>
+<li>Starte Docker und öffne die lokale aKlik-Deployer-App.</li>
+<li>Prüfe den GitHub-Link und lies Startplan, Lizenz und Hinweise.</li>
+<li>Trage erforderliche Projektangaben nur lokal ein. Verwende keine fremden Zugangsdaten.</li>
+<li>Wähle den angebotenen lokalen Start. Fehlende Pflichtwerte, ein gesperrter Plan oder unklare Lizenz verhindern den Start.</li>
+<li>Verfolge den Fortschritt unter „Meine Apps“. Öffne erst bei laufender Anwendung die lokale Projekt-Adresse.</li>
+<li>Nutze Stoppen bzw. Neustarten in „Meine Apps“. Das Schließen von aKlik-Deployer beendet bereits gestartete Container nicht automatisch.</li>
+</ol><ol class="flow" aria-label="Ablaufdiagramm">
+<li>Startplan und Pflichtangaben prüfen</li>
+<li>Start beauftragen</li>
+<li>Build und Containerstart unter „Meine Apps“ verfolgen</li>
+<li>Anwendung öffnen → bei Bedarf stoppen/neustarten</li>
+</ol><p class="tip">Fremde Anwendungen laufen als Container, teilen aber Docker-Ressourcen mit deinem Computer. Prüfe fremden Code und Lizenz vor produktivem Einsatz. Host-Startskripte werden nicht ungeprüft ausgeführt.</p></section>
+<section id="kapitel-5"><h2>5. Browser-Erweiterung einrichten</h2><p>Pakete liegen für Chrome, Edge, Brave, Opera, Vivaldi und Firefox bei. Die fünf Chromium-Pakete verwenden dieselbe Erweiterungstechnik. Store-Veröffentlichung und Firefox-Signierung sind ein eigener Schritt.</p><ol>
+<li>Entpacke Browser-Erweiterungen/aklik-deployer-&lt;browser&gt;.zip in einen dauerhaften Ordner.</li>
+<li>Chrome: chrome://extensions. Edge: edge://extensions. Brave: brave://extensions. Opera: opera://extensions. Vivaldi: vivaldi://extensions.</li>
+<li>Aktiviere dort den Entwicklermodus und wähle „Entpackte Erweiterung laden“. Wähle den Ordner mit manifest.json.</li>
+<li>Firefox: Öffne about:debugging#/runtime/this-firefox, wähle „Temporäres Add-on laden“ und die entpackte manifest.json.</li>
+<li>Starte die lokale App, öffne eine unterstützte Repository-Seite und klicke auf das Erweiterungssymbol.</li>
+<li>Das Add-on zeigt Status und einen Link zum passenden Startplan. Es startet selbst keine Container.</li>
+</ol><ol class="flow" aria-label="Ablaufdiagramm">
+<li>Passendes ZIP entpacken</li>
+<li>Erweiterung im Browser laden</li>
+<li>Lokale App und Repository-Seite öffnen</li>
+<li>Add-on anklicken → Status oder Startplan</li>
+</ol><p class="tip">Das Firefox-Testpaket wird beim Browserneustart entfernt. Safari benötigt ein gesondertes Apple-Projekt und Signierung; dafür ist kein installierbares Paket enthalten. Andere Browser wurden nicht als Laufzeittest behauptet.</p></section>
+<section id="kapitel-6"><h2>6. Lesezeichen und lokale Status-Badges</h2><p>Der integrierte Bookmarks Manager ist über den Werkzeugkasten erreichbar. Zusätzlich liegen Bookmarks-Erweiterungen für Chromium und Firefox bei. Diese verwalten eine eigene Sammlung.</p><ol>
+<li>Öffne den Bookmarks Manager innerhalb der lokalen App oder unter https://aklik-deployer.pages.dev/bookmarks/.</li>
+<li>Speichere oder importiere deine Links. Die optionale Lesezeichen-Datei liegt im Paket.</li>
+<li>Warte beim Repository-Link auf den farbigen Status.</li>
+<li>In der lokalen App kann „Lokal starten“ einen geeigneten GitHub-Startplan prüfen und den Start beauftragen.</li>
+<li>In der gehosteten Web-App und der Erweiterung öffnet der blaue Status nur den Prüfplan.</li>
+<li>Kontrolliere anschließend „Meine Apps“. Ein angenommener Startauftrag bedeutet noch nicht, dass die Anwendung bereits läuft.</li>
+</ol><ol class="flow" aria-label="Ablaufdiagramm">
+<li>Link in Sammlung speichern</li>
+<li>Hintergrundprüfung liefert Status</li>
+<li>Lokal: Start prüfen | Online: Prüfplan öffnen</li>
+<li>Ergebnis unter „Meine Apps“ kontrollieren</li>
+</ol><p class="tip">Gehostete Webseiten und Erweiterungen erhalten keine allgemeine Schreibberechtigung auf die lokale Engine. Die Status-Bridge ist nur an die Loopback-Adresse gebunden.</p></section>
+<section id="kapitel-7"><h2>7. Werkzeuge finden und vergleichen</h2><p>Die Suche verbindet öffentliche Fundstellen und Projektinformationen. Sie hilft dir, vorhandene Lösungen zu vergleichen, bevor du ein neues Werkzeug installierst.</p><ol>
+<li>Beschreibe deine Aufgabe möglichst konkret, zum Beispiel „lokales Diagrammwerkzeug ohne Konto“.</li>
+<li>Vergleiche mehrere Kandidaten nach Funktionen, Plattform, Lizenz und Startweg.</li>
+<li>Öffne die Originalquelle und prüfe aktuelle Bedingungen.</li>
+<li>Übernimm einen Kandidaten zur detaillierten Repository-Prüfung.</li>
+<li>Für zusätzliche lokale Websuche kann SearXNG eingerichtet werden; das ist ein separater Docker-Dienst.</li>
+</ol><ol class="flow" aria-label="Ablaufdiagramm">
+<li>Aufgabe beschreiben</li>
+<li>Quellen und Kandidaten vergleichen</li>
+<li>Lizenz, Plattform und Kosten prüfen</li>
+<li>Passenden Link detailliert analysieren</li>
+</ol><p class="tip">Katalogeinträge können veraltet sein. Eine kostenlose Liste garantiert keine kostenlose Nutzung der darin verlinkten Produkte.</p></section>
+<section id="kapitel-8"><h2>8. KI-Modelle und Agenten vorbereiten</h2><p>Der Modellbereich hilft bei der Einordnung eines Modell-Links und bei der Vorbereitung eines Agenten-Startpakets. Er ersetzt weder einen Anbieterzugang noch eine laufende Modellumgebung.</p><ol>
+<li>Öffne den Modellbereich und füge den Modell-Link ein.</li>
+<li>Prüfe Modell, Anbieter, Lizenz und die Anforderungen an Hardware oder Cloud-Zugang.</li>
+<li>Wähle ein passendes Profil und lade das angebotene Agenten-Startpaket herunter.</li>
+<li>Lies dessen Anleitung, bevor du Befehle ausführst.</li>
+<li>Richte eigene Zugangsdaten lokal ein und prüfe Anbieterpreise vor jeder kostenpflichtigen Nutzung.</li>
+</ol><ol class="flow" aria-label="Ablaufdiagramm">
+<li>Modell-Link eingeben</li>
+<li>Lizenz und Betriebsweg prüfen</li>
+<li>Agenten-Startpaket vorbereiten</li>
+<li>Zugang lokal einrichten und Funktion testen</li>
+</ol><p class="tip">Ein heruntergeladenes Startpaket ist noch kein laufender Agent. Die App verspricht keine kostenlose Modell-Inferenz und enthält keine persönlichen API-Schlüssel.</p></section>
+<section id="kapitel-9"><h2>9. Daten sichern, aktualisieren und Fehler lösen</h2><p>Web-App und lokale App speichern Daten an unterschiedlichen Orten. Ein Programmupdate ist kein Backup deiner persönlichen Sammlung.</p><ol>
+<li>Exportiere deine Lesezeichen regelmäßig mit der Exportfunktion des Managers.</li>
+<li>Die lokale App legt ihre Daten unter dem Benutzer-Datenordner aKlik-Deployer ab, unter Windows normalerweise %LOCALAPPDATA%\aKlik-Deployer. Im Quellcodebetrieb ist es .data/.</li>
+<li>Beende die lokale App vor einer Dateisicherung. Verwahre eine Datenbanksicherung vertraulich; bei SQLite gehören vorhandene WAL-/SHM-Dateien dazu.</li>
+<li>Für Updates: Lade ein neues Release vom GitHub-Repository und ersetze die Programmdateien oder verwende den neuen Installer. Sichere Daten vorher.</li>
+<li>Bei „lokale App nicht erreichbar“: lokale App starten, nur eine Instanz verwenden und Port 43110 prüfen.</li>
+<li>Bei Docker-Fehlern: Docker starten, Pflichtangaben und Projekt-Logs prüfen. Bei Browserfehlern: neu laden, Internet und API-Limits prüfen.</li>
+</ol><ol class="flow" aria-label="Ablaufdiagramm">
+<li>Vor Update Sammlung exportieren und lokale App beenden</li>
+<li>Neues Release und Prüfsummen prüfen</li>
+<li>Programm bzw. entpackte Erweiterung aktualisieren</li>
+<li>Sammlung und einen bekannten Link kontrollieren</li>
+</ol><p class="tip">Das Gesamtpaket enthält absichtlich keine persönliche Datenbank, Schlüssel oder Browserdaten. Es gibt keinen eingerichteten automatischen Desktop-Updater.</p></section>
+<section id="kapitel-10"><h2>10. Kommerziell nutzen und selbst veröffentlichen</h2><p>Die kommerzielle Web-Variante wird für Cloudflare Pages bereitgestellt. GitHub verwaltet den Quellcode und die Download-Releases. Die Vercel-Hobby-Seite bleibt eine Demo für nicht kommerzielle Nutzung.</p><ol>
+<li>Verwende für die kommerzielle Web-Veröffentlichung die Cloudflare-Adresse. Tarifgrenzen gelten; statisches Hosting ersetzt keinen Docker-Server.</li>
+<li>Der eigene Quellcode bleibt dem Rechteinhaber vorbehalten. Die öffentliche Ablage erteilt anderen keine pauschale Weiterverkaufslizenz.</li>
+<li>Remotion 4 erlaubt Einzelpersonen und kleinen Organisationen die kommerzielle Nutzung unter der Free License. Oberhalb der dortigen Grenze von drei Personen ist eine Company License nötig.</li>
+<li>Behalte THIRD_PARTY_NOTICES.md, public/licenses.txt und Schriftlizenzen bei einer Weitergabe bei.</li>
+<li>Für einen Geschäftsbetrieb: eigene Anbieterbedingungen, Datenschutzhinweise und erforderliche Betreiberangaben ergänzen. Zahlungsabwicklung ist kein Bestandteil dieses Tools.</li>
+</ol><ol class="flow" aria-label="Ablaufdiagramm">
+<li>Eigenes Produkt und Fremdlizenzen prüfen</li>
+<li>Statischen Web-Build erstellen</li>
+<li>Cloudflare Pages veröffentlichen</li>
+<li>Download-Release bereitstellen und öffentlich prüfen</li>
+</ol><p class="tip">Fremde Repository-Projekte haben eigene Lizenzen. Die App erteilt keine Rechte an deren Code. Kostenloses Hosting und kommerzielle Softwarelizenz sind getrennte Fragen.</p></section>
+<section><h2>Quellen</h2><p><a href="https://github.com/remotion-dev/remotion/blob/main/LICENSE.md">Remotion-Lizenz</a></p><p><a href="https://www.cloudflare.com/products/pages/">Cloudflare Pages</a></p><p><a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare Tarifgrenzen</a></p><p><a href="https://www.cloudflare.com/terms/">Cloudflare Bedingungen</a></p><p><a href="https://vercel.com/docs/plans/hobby">Vercel Hobby</a></p></section></main></html>
