@@ -17,6 +17,7 @@ OUT = ROOT / 'docs'
 OUT.mkdir(exist_ok=True)
 ORIGIN = 'https://aklik-deployer.pages.dev'
 REPO = 'https://github.com/Johi251/aKlik-Deployer'
+VERSION = json.loads((ROOT/'package.json').read_text(encoding='utf-8'))['version']
 CHAPTERS = [
  dict(title='Dein Werkzeugkasten', intro='aKlik-Deployer hilft dir, vorhandene Software zu finden, Repository-Links zu prüfen und geeignete Projekte lokal zu starten. Die Web-App, die Windows-App und die Erweiterungen ergänzen sich.',
  steps=['Für Recherche ohne Installation: Öffne '+ORIGIN+'.', 'Für lokale Projekte: Installiere die Windows-App aus dem Gesamtpaket.', 'Für Status direkt auf einer Repository-Seite: Lade die passende Browser-Erweiterung.', 'Bewahre das Gesamtpaket auf. Quellcode, Build-Skripte, Erweiterungen und dieses Handbuch gehören dazu.'],
@@ -60,6 +61,16 @@ CHAPTERS = [
  tip='Fremde Repository-Projekte haben eigene Lizenzen. Die App erteilt keine Rechte an deren Code. Kostenloses Hosting und kommerzielle Softwarelizenz sind getrennte Fragen.'),
 ]
 
+CHAPTERS.insert(2,dict(title='Auf dem Mac verwenden',intro='Für Apple Silicon und Intel liegen getrennte native Mac-Pakete bei. Beide enthalten Programm und lokale Engine; Bun muss für die Nutzung nicht separat installiert werden.',
+ steps=['Wähle die DMG mit aarch64 für Apple Silicon oder x64 für einen Intel-Mac.', 'Öffne die DMG und übernimm aKlik-Deployer in deinen Programme-Ordner.', 'Starte jeweils nur eine App-Instanz. Die lokale Oberfläche verwendet Port 43110.', 'Für Containerprojekte benötigst du Git und eine laufende Docker-Installation mit Linux-Containern.', 'Öffne „Diagnose & Hilfe“ und prüfe die verfügbare Startbereitschaft.'],
+ flow=['Passende Mac-Architektur wählen','DMG öffnen und App übernehmen','Lokale Anwendung starten','Recherche nutzen oder Docker-Voraussetzungen prüfen'],
+ tip='Die Mac-Builds sind nicht notarisiert. macOS kann den Start zurückweisen. Engine-Selbsttests ersetzen keinen interaktiven Mac-Test; Apple-Schutzfunktionen werden nicht automatisch umgangen.'))
+CHAPTERS.insert(9,dict(title='Startbereitschaft und Prüfbericht',intro='Unter „Diagnose & Hilfe“ siehst du verfügbare Funktionen und fehlende Voraussetzungen. Eine fehlende Docker-Installation sperrt die Recherche nicht.',
+ steps=['Öffne „Diagnose & Hilfe“. Die App prüft ihre Voraussetzungen erneut.', 'Lies zuerst „Was kannst du jetzt nutzen?“. Recherche, Containerstarts, Quellcode-Builds und Erweiterungsverbindung werden getrennt bewertet.', 'Containerstarts brauchen Git und Docker mit Linux-Containern. Railpack ist zusätzlich für den entsprechenden Quellcode-Buildweg nötig.', 'Öffne fehlende Werkzeuge und klicke „Erneut prüfen“. Der einzelne Repository-Startplan wird trotzdem nochmals geprüft.', '„Prüfbericht herunterladen“ erstellt eine JSON-Datei mit Version und Status. Logs, Pfade, Projekte und Zugangsdaten werden weggelassen.', 'Während einer laufenden oder fehlgeschlagenen Prüfung ist der Download deaktiviert. Alte Ergebnisse werden nicht als neuer Bericht angeboten.'],
+ flow=['Diagnose öffnen','Funktionen und Voraussetzungen lesen','Voraussetzung einrichten und erneut prüfen','Datensparsamen Prüfbericht herunterladen'],
+ tip='„Verfügbar“ bestätigt grundlegende Voraussetzungen. Externe API-Limits, passende Projektlizenzen und die Funktion fremder Anwendungen müssen zusätzlich geprüft werden.'))
+CHAPTERS=json.loads(json.dumps(CHAPTERS).replace('1.0.0',VERSION))
+CHAPTERS[-1]['intro']='Die persönliche Web-Demo läuft auf https://johi251.github.io/aKlik-Deployer/. Die kommerzielle Hosting-Variante bleibt auf Cloudflare Pages. GitHub verwaltet außerdem Quellcode und Download-Releases.'
 font_candidates=[Path('C:/Windows/Fonts/segoeui.ttf'),Path('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf')]
 font=next((p for p in font_candidates if p.exists()),None)
 if not font: raise RuntimeError('Unicode font missing')
@@ -71,7 +82,7 @@ body=ParagraphStyle('body',fontName='Handbook',fontSize=10,leading=15,textColor=
 small=ParagraphStyle('small',parent=body,fontSize=9,leading=13)
 node_style=ParagraphStyle('node',parent=body,fontSize=9.5,leading=13,alignment=1)
 pdf=canvas.Canvas(str(OUT/'Benutzerhandbuch.pdf'),pagesize=A4)
-pdf.setTitle('aKlik-Deployer – Benutzerhandbuch 1.0.0')
+pdf.setTitle('aKlik-Deployer – Benutzerhandbuch '+VERSION)
 pdf.setAuthor('aKlik-Deployer')
 md=['# aKlik-Deployer – Benutzerhandbuch 1.0.0','',f'Web: {ORIGIN} · Quellcode und Releases: {REPO}','', 'Stand: 25.10.2026. Pakete sind unsigniert. Browserpakete sind Entwicklerpakete, keine Store-Veröffentlichung.','']
 html=['<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>aKlik-Deployer · Benutzerhandbuch</title><style>body{font:17px/1.6 system-ui,sans-serif;color:#172033;background:#f4f6fa;margin:0}main{max-width:900px;margin:auto;padding:32px}section{background:white;border:1px solid #d7deeb;border-radius:16px;padding:28px;margin:24px 0;break-inside:avoid}h1,h2{color:#1e40af;line-height:1.2}a{color:#1e40af}li{margin:10px 0}.flow{list-style:none;padding:0;text-align:center}.flow li{border:1px solid #96abe4;background:#eef3ff;padding:12px;border-radius:8px}.flow li+li:before{content:"↓";display:block;color:#1e40af;margin-top:-24px;padding-bottom:8px}.tip{border-left:3px solid #1e40af;padding:12px;background:#eef3ff}nav a{display:block} @media print{body{background:white;font-size:11pt}main{padding:0}section{border:0;break-before:page}nav{display:none}}</style><main><h1>aKlik-Deployer<br>Benutzerhandbuch 1.0.0</h1>',f'<p>Web: <a href="{ORIGIN}">{ORIGIN}</a><br>Quellcode und Downloads: <a href="{REPO}">{REPO}</a></p><nav>']
@@ -85,7 +96,7 @@ def para(text,x,y,width,style=body):
 
 for index,ch in enumerate(CHAPTERS,1):
  pdf.setFillColor(HexColor('#1e40af'));pdf.rect(0,H-16,W,16,fill=1,stroke=0)
- pdf.setFont('HandbookBold',11);pdf.drawString(44,H-48,'aKlik-Deployer / Benutzerhandbuch 1.0.0')
+ pdf.setFont('HandbookBold',11);pdf.drawString(44,H-48,'aKlik-Deployer / Benutzerhandbuch '+VERSION)
  pdf.setFont('HandbookBold',20);pdf.setFillColor(HexColor('#172033'))
  title=Paragraph(escape(ch['title']),ParagraphStyle('title',fontName='HandbookBold',fontSize=21,leading=26,textColor=HexColor('#172033')))
  _,th=title.wrap(W-88,H);title.drawOn(pdf,44,H-82-th)
@@ -108,7 +119,7 @@ for index,ch in enumerate(CHAPTERS,1):
  y=para(ch['tip'],44,y-14,W-88,small)
  if y<48: raise RuntimeError(f'Page {index} overflow: {y}')
  pdf.setFont('Handbook',8);pdf.setFillColor(HexColor('#5d6c80'))
- pdf.drawString(44,28,'25.10.2026 · Ablaufdiagramme beschreiben den vorgesehenen Bedienweg')
+ pdf.drawString(44,28,'26.10.2026 · Ablaufdiagramme beschreiben den vorgesehenen Bedienweg')
  pdf.drawRightString(W-44,28,f'{index} / {len(CHAPTERS)}')
  pdf.showPage()
  md.extend([f'## {index}. {ch["title"]}','',ch['intro'],'']+[f'{n}. {s}' for n,s in enumerate(ch['steps'],1)]+['','```mermaid','flowchart TD'])
@@ -125,6 +136,6 @@ pdf.save()
 sources=[('Remotion-Lizenz','https://github.com/remotion-dev/remotion/blob/main/LICENSE.md'),('Cloudflare Pages','https://www.cloudflare.com/products/pages/'),('Cloudflare Tarifgrenzen','https://developers.cloudflare.com/pages/platform/limits/'),('Cloudflare Bedingungen','https://www.cloudflare.com/terms/'),('Vercel Hobby','https://vercel.com/docs/plans/hobby')]
 md.extend(['## Quellen','']+[f'- [{n}]({u})' for n,u in sources])
 html.append('<section><h2>Quellen</h2>'+''.join(f'<p><a href="{u}">{escape(n)}</a></p>' for n,u in sources)+'</section></main></html>')
-(OUT/'Benutzerhandbuch.md').write_text('\n'.join(md),encoding='utf-8')
-(OUT/'Benutzerhandbuch.html').write_text('\n'.join(html),encoding='utf-8')
+(OUT/'Benutzerhandbuch.md').write_text('\n'.join(md).replace('1.0.0',VERSION).replace('25.10.2026','26.10.2026'),encoding='utf-8')
+(OUT/'Benutzerhandbuch.html').write_text('\n'.join(html).replace('1.0.0',VERSION).replace('25.10.2026','26.10.2026'),encoding='utf-8')
 print(json.dumps({'pages':len(CHAPTERS),'pdf':str(OUT/'Benutzerhandbuch.pdf'),'html':str(OUT/'Benutzerhandbuch.html')},ensure_ascii=False))

@@ -2,6 +2,25 @@
 
 Web: https://aklik-deployer.pages.dev · Repository: https://github.com/Johi251/aKlik-Deployer
 
+Persönliche Web-Demo auf GitHub Pages: https://johi251.github.io/aKlik-Deployer/.
+
+## Ergänzungen in 1.1.0
+
+`src/readiness.ts` trennt Recherche, Containerstarts, Railpack-Builds und Bridge-Nutzung.
+Der exportierbare Prüfbericht lässt rohe Diagnosedetails, Dateipfade, Logs und Projekte weg.
+`src/version.ts` liest die Paketversion; Tests vergleichen sie mit Tauri, Rust und Add-on.
+
+GitHub Pages wird mit `AKLIK_WEB_BASE=/aKlik-Deployer/ bun run release:web` gebaut.
+`.github/workflows/pages.yml` veröffentlicht nach Tests. Cloudflare nutzt weiter `/`.
+Die Desktop-Bookmarks werden immer mit lokalen Pfaden gebaut; für GitHub Pages entsteht
+eine separate Ausgabe, damit der Download keine falschen lokalen Asset-Pfade enthält.
+
+Den Desktop-Workflow mit `platforms=all` ausführen. Jeder Runner prüft seine native Engine
+mit isolierten Daten. Artefakte nach `.data/releases/native/windows`, `mac-arm64`,
+`mac-intel` und `linux` herunterladen. Danach erstellt `bun scripts/package-release.ts`
+das Gesamt-ZIP. Fehlende oder zur Version unpassende Engine-Nachweise verhindern die
+Paketierung. Alte Installer werden nicht als Ersatz übernommen.
+
 ## Bestand und Datenfluss
 
 ```mermaid

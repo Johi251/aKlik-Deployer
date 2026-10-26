@@ -1,4 +1,35 @@
-# aKlik-Deployer · 1.0.0
+# aKlik-Deployer · 1.1.0
+
+## Aktuelle Version · 26.10.2026
+
+- **GitHub-Web-Demo:** https://johi251.github.io/aKlik-Deployer/
+- **Cloudflare-Web-App:** https://aklik-deployer.pages.dev/
+- **Downloads:** https://github.com/Johi251/aKlik-Deployer/releases/latest
+- **Handbuch:** [PDF](docs/Benutzerhandbuch.pdf), [offline HTML](docs/Benutzerhandbuch.html), [Markdown](docs/Benutzerhandbuch.md).
+
+Neu: „Diagnose & Hilfe“ zeigt die Startbereitschaft für Recherche, Containerstarts,
+Quellcode-Builds und die Browser-Erweiterung getrennt an. Ein fehlendes Docker sperrt
+die Recherche nicht. Der herunterladbare Prüfbericht enthält Version und Status,
+keine rohen Logs, Dateipfade, Repository-Links, Projekte oder Schlüssel.
+
+Windows: Gesamtpaket entpacken und START-AKLIK.cmd für die portable EXE öffnen.
+Für ein eigenes Programmfenster den enthaltenen Windows-Installer verwenden.
+Mac: aarch64-DMG für Apple Silicon, x64-DMG für Intel. Jeweils eine Instanz starten.
+Die lokale App benötigt für Recherche keine separate Bun-Installation; Containerstarts
+brauchen Git und Docker mit Linux-Containern. Die Web-App steuert deinen PC nicht.
+
+Erweiterungen: Chrome, Edge, Brave, Opera, Vivaldi und Firefox; Chromium-Pakete
+entpackt im Entwicklermodus, Firefox temporär über about:debugging laden.
+Keine Store-Veröffentlichung, keine Firefox-Signierung und kein Safari-Paket.
+
+Die Version wird zwischen Engine, Add-on und Tauri geprüft. Neue Gesamtpakete verlangen
+passende native Builds und deren Engine-Selbsttests; alte Installer werden nicht übernommen.
+Windows ist unsigniert, Mac nicht notarisiert. Engine-Selbsttests sind kein Beleg einer
+vollständigen interaktiven Bedienprüfung. GitHub Pages dient als persönliche Demo;
+die kommerzielle Hosting-Variante bleibt auf Cloudflare, mit den dokumentierten Fremdlizenzen.
+
+Die folgenden Abschnitte halten den früheren Entstehungsstand fest. Aussagen über eine
+fehlende GitHub-Freigabe oder Mac-Buildmöglichkeit dort sind historisch überholt.
 
 ## Veröffentlichung und Gesamtpaket · 25.10.2026
 

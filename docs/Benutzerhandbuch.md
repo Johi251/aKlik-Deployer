@@ -1,8 +1,8 @@
-# aKlik-Deployer – Benutzerhandbuch 1.0.0
+# aKlik-Deployer – Benutzerhandbuch 1.1.0
 
 Web: https://aklik-deployer.pages.dev · Quellcode und Releases: https://github.com/Johi251/aKlik-Deployer
 
-Stand: 25.10.2026. Pakete sind unsigniert. Browserpakete sind Entwicklerpakete, keine Store-Veröffentlichung.
+Stand: 26.10.2026. Pakete sind unsigniert. Browserpakete sind Entwicklerpakete, keine Store-Veröffentlichung.
 
 ## 1. Dein Werkzeugkasten
 
@@ -31,7 +31,7 @@ Hinweis: Die Web-App führt kein Docker auf deinem PC aus. Ein öffentliches Rep
 Die native Tauri-App öffnet ein eigenes Programmfenster. Die portable EXE stellt dieselben lokalen Funktionen in deinem Standardbrowser bereit. Beide verwenden dieselbe lokale Adresse.
 
 1. Entpacke das Gesamtpaket vollständig in einen eigenen Ordner.
-2. Öffne unter Windows die Datei Windows/aKlik-Deployer_1.0.0_x64-setup.exe für die Installation. Starte danach aKlik-Deployer.
+2. Öffne unter Windows die Datei Windows/aKlik-Deployer_1.1.0_x64-setup.exe für die Installation. Starte danach aKlik-Deployer.
 3. Alternativ: Starte Windows/aKlik-Deployer-portable.exe. Dafür brauchst du Bun nicht separat.
 4. Verwende jeweils nur eine der beiden Varianten zur selben Zeit.
 5. Für Docker-Projekte muss Docker mit Linux-Containern laufen. Die Status-Bridge und Recherche brauchen Docker nicht.
@@ -49,7 +49,30 @@ flowchart TD
 
 Hinweis: Die Windows-Dateien sind nicht signiert. Prüfe Quelle und SHA256SUMS.txt. Das Handbuch fordert dich nicht auf, Schutzfunktionen abzuschalten. Das native Fenster benötigt WebView2.
 
-## 3. Repository prüfen und Status verstehen
+## 3. Auf dem Mac verwenden
+
+Für Apple Silicon und Intel liegen getrennte native Mac-Pakete bei. Beide enthalten Programm und lokale Engine; Bun muss für die Nutzung nicht separat installiert werden.
+
+1. Wähle die DMG mit aarch64 für Apple Silicon oder x64 für einen Intel-Mac.
+2. Öffne die DMG und übernimm aKlik-Deployer in deinen Programme-Ordner.
+3. Starte jeweils nur eine App-Instanz. Die lokale Oberfläche verwendet Port 43110.
+4. Für Containerprojekte benötigst du Git und eine laufende Docker-Installation mit Linux-Containern.
+5. Öffne „Diagnose & Hilfe“ und prüfe die verfügbare Startbereitschaft.
+
+```mermaid
+flowchart TD
+    n0["Passende Mac-Architektur wählen"]
+    n1["DMG öffnen und App übernehmen"]
+    n0 --> n1
+    n2["Lokale Anwendung starten"]
+    n1 --> n2
+    n3["Recherche nutzen oder Docker-Voraussetzungen prüfen"]
+    n2 --> n3
+```
+
+Hinweis: Die Mac-Builds sind nicht notarisiert. macOS kann den Start zurückweisen. Engine-Selbsttests ersetzen keinen interaktiven Mac-Test; Apple-Schutzfunktionen werden nicht automatisch umgangen.
+
+## 4. Repository prüfen und Status verstehen
 
 Öffne den Bereich zum Prüfen eines Repository-Links. Füge einen öffentlichen Projekt-Link ein und starte die Analyse. Die Prüfung liest Metadaten und ausgewählte Dateien; sie führt dabei keine fremden Startskripte aus.
 
@@ -72,7 +95,7 @@ flowchart TD
 
 Hinweis: Ein Dockerfile beweist noch keinen erfolgreichen Start. Die ausführliche automatische lokale Installation unterstützt GitHub; bei GitLab und Hugging Face bleibt die Ausführung manuell.
 
-## 4. Ein Projekt auf deinem PC starten
+## 5. Ein Projekt auf deinem PC starten
 
 Die lokale App zeigt einen Startplan mit Lizenz, Voraussetzungen und möglichen Pflichtangaben. Erst der bewusste Start beauftragt die lokale Engine.
 
@@ -96,7 +119,7 @@ flowchart TD
 
 Hinweis: Fremde Anwendungen laufen als Container, teilen aber Docker-Ressourcen mit deinem Computer. Prüfe fremden Code und Lizenz vor produktivem Einsatz. Host-Startskripte werden nicht ungeprüft ausgeführt.
 
-## 5. Browser-Erweiterung einrichten
+## 6. Browser-Erweiterung einrichten
 
 Pakete liegen für Chrome, Edge, Brave, Opera, Vivaldi und Firefox bei. Die fünf Chromium-Pakete verwenden dieselbe Erweiterungstechnik. Store-Veröffentlichung und Firefox-Signierung sind ein eigener Schritt.
 
@@ -120,7 +143,7 @@ flowchart TD
 
 Hinweis: Das Firefox-Testpaket wird beim Browserneustart entfernt. Safari benötigt ein gesondertes Apple-Projekt und Signierung; dafür ist kein installierbares Paket enthalten. Andere Browser wurden nicht als Laufzeittest behauptet.
 
-## 6. Lesezeichen und lokale Status-Badges
+## 7. Lesezeichen und lokale Status-Badges
 
 Der integrierte Bookmarks Manager ist über den Werkzeugkasten erreichbar. Zusätzlich liegen Bookmarks-Erweiterungen für Chromium und Firefox bei. Diese verwalten eine eigene Sammlung.
 
@@ -144,7 +167,7 @@ flowchart TD
 
 Hinweis: Gehostete Webseiten und Erweiterungen erhalten keine allgemeine Schreibberechtigung auf die lokale Engine. Die Status-Bridge ist nur an die Loopback-Adresse gebunden.
 
-## 7. Werkzeuge finden und vergleichen
+## 8. Werkzeuge finden und vergleichen
 
 Die Suche verbindet öffentliche Fundstellen und Projektinformationen. Sie hilft dir, vorhandene Lösungen zu vergleichen, bevor du ein neues Werkzeug installierst.
 
@@ -167,7 +190,7 @@ flowchart TD
 
 Hinweis: Katalogeinträge können veraltet sein. Eine kostenlose Liste garantiert keine kostenlose Nutzung der darin verlinkten Produkte.
 
-## 8. KI-Modelle und Agenten vorbereiten
+## 9. KI-Modelle und Agenten vorbereiten
 
 Der Modellbereich hilft bei der Einordnung eines Modell-Links und bei der Vorbereitung eines Agenten-Startpakets. Er ersetzt weder einen Anbieterzugang noch eine laufende Modellumgebung.
 
@@ -190,7 +213,31 @@ flowchart TD
 
 Hinweis: Ein heruntergeladenes Startpaket ist noch kein laufender Agent. Die App verspricht keine kostenlose Modell-Inferenz und enthält keine persönlichen API-Schlüssel.
 
-## 9. Daten sichern, aktualisieren und Fehler lösen
+## 10. Startbereitschaft und Prüfbericht
+
+Unter „Diagnose & Hilfe“ siehst du verfügbare Funktionen und fehlende Voraussetzungen. Eine fehlende Docker-Installation sperrt die Recherche nicht.
+
+1. Öffne „Diagnose & Hilfe“. Die App prüft ihre Voraussetzungen erneut.
+2. Lies zuerst „Was kannst du jetzt nutzen?“. Recherche, Containerstarts, Quellcode-Builds und Erweiterungsverbindung werden getrennt bewertet.
+3. Containerstarts brauchen Git und Docker mit Linux-Containern. Railpack ist zusätzlich für den entsprechenden Quellcode-Buildweg nötig.
+4. Öffne fehlende Werkzeuge und klicke „Erneut prüfen“. Der einzelne Repository-Startplan wird trotzdem nochmals geprüft.
+5. „Prüfbericht herunterladen“ erstellt eine JSON-Datei mit Version und Status. Logs, Pfade, Projekte und Zugangsdaten werden weggelassen.
+6. Während einer laufenden oder fehlgeschlagenen Prüfung ist der Download deaktiviert. Alte Ergebnisse werden nicht als neuer Bericht angeboten.
+
+```mermaid
+flowchart TD
+    n0["Diagnose öffnen"]
+    n1["Funktionen und Voraussetzungen lesen"]
+    n0 --> n1
+    n2["Voraussetzung einrichten und erneut prüfen"]
+    n1 --> n2
+    n3["Datensparsamen Prüfbericht herunterladen"]
+    n2 --> n3
+```
+
+Hinweis: „Verfügbar“ bestätigt grundlegende Voraussetzungen. Externe API-Limits, passende Projektlizenzen und die Funktion fremder Anwendungen müssen zusätzlich geprüft werden.
+
+## 11. Daten sichern, aktualisieren und Fehler lösen
 
 Web-App und lokale App speichern Daten an unterschiedlichen Orten. Ein Programmupdate ist kein Backup deiner persönlichen Sammlung.
 
@@ -214,9 +261,9 @@ flowchart TD
 
 Hinweis: Das Gesamtpaket enthält absichtlich keine persönliche Datenbank, Schlüssel oder Browserdaten. Es gibt keinen eingerichteten automatischen Desktop-Updater.
 
-## 10. Kommerziell nutzen und selbst veröffentlichen
+## 12. Kommerziell nutzen und selbst veröffentlichen
 
-Die kommerzielle Web-Variante wird für Cloudflare Pages bereitgestellt. GitHub verwaltet den Quellcode und die Download-Releases. Die Vercel-Hobby-Seite bleibt eine Demo für nicht kommerzielle Nutzung.
+Die persönliche Web-Demo läuft auf https://johi251.github.io/aKlik-Deployer/. Die kommerzielle Hosting-Variante bleibt auf Cloudflare Pages. GitHub verwaltet außerdem Quellcode und Download-Releases.
 
 1. Verwende für die kommerzielle Web-Veröffentlichung die Cloudflare-Adresse. Tarifgrenzen gelten; statisches Hosting ersetzt keinen Docker-Server.
 2. Der eigene Quellcode bleibt dem Rechteinhaber vorbehalten. Die öffentliche Ablage erteilt anderen keine pauschale Weiterverkaufslizenz.

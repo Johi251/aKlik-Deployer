@@ -19,7 +19,9 @@ const source=await sourceFiles(root),zipOptions={level:6 as const,mtime:new Date
 const sourceZip=zipSync(source,zipOptions);
 await Bun.write(join(out,'aKlik-Deployer-Quellcode.zip'),sourceZip);
 files['Quellcode/aKlik-Deployer-Quellcode.zip']=sourceZip;
-await add('Windows/aKlik-Deployer-portable.exe',join(out,'aKlik-Deployer.exe'));
+const portable=await readFile(join(out,'aKlik-Deployer.exe')),windowsManifest=await Bun.file(join(out,'windows.json')).json();
+if(windowsManifest.version!==APP_VERSION||createHash('sha256').update(portable).digest('hex')!==windowsManifest.sha256)throw Error('Portable EXE passt nicht zum aktuellen Release.');
+files['Windows/aKlik-Deployer-portable.exe']=new Uint8Array(portable);
 const setup=`aKlik-Deployer_${APP_VERSION}_x64-setup.exe`,msi=`aKlik-Deployer_${APP_VERSION}_x64_en-US.msi`;
 await add('Windows/'+setup,join(native,'windows/nsis',setup));
 await add('Windows/'+msi,join(native,'windows/msi',msi));

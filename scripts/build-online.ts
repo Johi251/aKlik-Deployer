@@ -37,7 +37,16 @@ for(const icon of manifest.icons)if(icon.src.startsWith('/'))icon.src=applicatio
 await Bun.write(join(dist,'manifest.webmanifest'),JSON.stringify(manifest,null,2));
 await Bun.write(join(dist,'.nojekyll'),'');
 await Bun.write(join(dist, "QUELLENHINWEISE.md"), Bun.file(join(root, "THIRD_PARTY_NOTICES.md")));
-await cp(join(root,"integrations/bookmarks-manager/dist"),join(dist,"bookmarks"),{recursive:true});
+let bookmarks=join(root,'integrations/bookmarks-manager/dist');
+if(base!=='/'){
+ bookmarks=join(root,'.data/bookmarks-pages');
+ const build=Bun.spawn(['bun','run','build','--base='+base+'bookmarks/','--outDir='+bookmarks],{cwd:join(root,'integrations/bookmarks-manager'),stdout:'inherit',stderr:'inherit',windowsHide:true});
+ if(await build.exited)throw Error('Bookmarks-Build für GitHub Pages fehlgeschlagen.');
+}
+await cp(bookmarks,join(dist,"bookmarks"),{recursive:true});
+const bookmarkWorker=await Bun.file(join(dist,'bookmarks/sw.js')).text();
+if(!bookmarkWorker.includes("const CACHE = 'bdm-aklik-deployer-v1.3.0';"))throw Error('Unbekannter Bookmarks-Cache-Vertrag.');
+await Bun.write(join(dist,'bookmarks/sw.js'),bookmarkWorker.replace("const CACHE = 'bdm-aklik-deployer-v1.3.0';","const PREFIX='bdm-aklik-deployer-'+new URL('./',self.location.href).pathname+'v';\nconst CACHE=PREFIX+'1.3.0';").replace("k.startsWith('bdm-')","k.startsWith(PREFIX)"));
 await mkdir(join(dist,"downloads"),{recursive:true});
 const release=join(root,".data/releases");
 const windows=await Bun.file(join(release,"windows.json")).json();
