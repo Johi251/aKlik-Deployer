@@ -1,10 +1,11 @@
 import type { MotionHandle } from "./motion-entry";
+import {applicationPath} from './paths';
 const FRAMES=180, TOTAL=720;
 type Mount = (host:HTMLElement,compact:boolean,onReady:()=>void)=>MotionHandle;
 export function setupStoryboard(load:()=>Promise<{mountWorkflow:Mount}>=async()=>{
   const inline=(globalThis as typeof globalThis & {aklikDeployerMotion?:{mountWorkflow:Mount}}).aklikDeployerMotion;
   if(inline)return inline;
-  const path="/workflow.js";return import(path);
+  const path=applicationPath("/workflow.js");return import(path);
 }):()=>void {
   const story=document.getElementById("hero-scroll"),host=document.getElementById("workflow-film"),stage=document.getElementById("hero-preview");
   const chapters=[...document.querySelectorAll<HTMLElement>("[data-workflow-chapter]")];

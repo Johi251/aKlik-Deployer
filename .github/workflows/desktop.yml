@@ -13,6 +13,7 @@ permissions:
   contents: read
 jobs:
   build:
+    timeout-minutes: 35
     strategy:
       fail-fast: false
       matrix:
@@ -33,7 +34,11 @@ jobs:
         working-directory: integrations/bookmarks-manager
       - run: bun run check
       - run: bun test
-      - run: bun run build:tauri
+      - if: runner.os != 'Linux'
+        run: bun run build:tauri
+      - if: runner.os == 'Linux'
+        run: bun run build:tauri -- --bundles deb
+      - run: bun scripts/verify-native-engine.ts
       - uses: actions/upload-artifact@v4
         with:
           name: aKlik-Deployer-${{ matrix.os }}

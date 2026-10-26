@@ -1,9 +1,11 @@
 import {mkdir,readdir,readFile} from "node:fs/promises";
 import {join,resolve,relative} from "node:path";
 import {zipSync} from "fflate";
+import {webBase} from '../src/web/paths';
 const root=resolve(import.meta.dir,".."),manager=join(root,"integrations/bookmarks-manager"),out=join(root,".data/releases");
 await mkdir(out,{recursive:true});
-const build=Bun.spawn(["bun","run","build","--base=/bookmarks/"],{cwd:manager,stdout:"inherit",stderr:"inherit",windowsHide:true});if(await build.exited)throw Error("Bookmarks Web-Build fehlgeschlagen.");
+const base=webBase(process.env.AKLIK_WEB_BASE??'/');
+const build=Bun.spawn(["bun","run","build","--base="+base+"bookmarks/"],{cwd:manager,stdout:"inherit",stderr:"inherit",windowsHide:true});if(await build.exited)throw Error("Bookmarks Web-Build fehlgeschlagen.");
 const ext=Bun.spawn(["bunx","vite","build","-c","vite.config.ext.ts"],{cwd:manager,stdout:"inherit",stderr:"inherit",windowsHide:true});if(await ext.exited)throw Error("Bookmarks Add-on-Build fehlgeschlagen.");
 const background=await Bun.build({entrypoints:[join(manager,"extension/background.ts")],format:"iife",target:"browser",minify:true});
 if(!background.success)throw Error("Add-on-Hintergrundskript fehlgeschlagen.");await Bun.write(join(manager,"dist-ext/background.js"),background.outputs[0]!);

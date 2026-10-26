@@ -1,14 +1,15 @@
 import { command } from "./process";
 import { toolsStatus } from "./runtime";
+import {APP_VERSION} from './version';
+import type {DiagnosticReport} from './readiness';
 
-export interface Diagnostic { name: string; status: "ok" | "warn"; detail: string; action?: string }
-export async function diagnostics(): Promise<{ checkedAt: string; checks: Diagnostic[] }> {
+export async function diagnostics(): Promise<DiagnosticReport> {
   const [git, docker, search] = await Promise.all([
     command(["git", "--version"], { timeout: 8000 }), toolsStatus(),
     fetch("http://127.0.0.1:43111/healthz", { signal: AbortSignal.timeout(3000) }).then(r => r.ok).catch(() => false),
   ]);
-  return { checkedAt: new Date().toISOString(), checks: [
-    { name: "aKlik-Deployer", status: "ok", detail: "Version 0.3.0 · lokale Sitzung erreichbar" },
+  return { edition:'local', checkedAt: new Date().toISOString(), checks: [
+    { name: "aKlik-Deployer", status: "ok", detail: "Version "+APP_VERSION+" · lokale Sitzung erreichbar" },
     { name: "Bun", status: "ok", detail: Bun.version },
     { name: "Git", status: git.code === 0 ? "ok" : "warn", detail: git.code === 0 ? git.stdout.trim() : "Git nicht erreichbar", action: git.code === 0 ? undefined : "Git installieren und aKlik-Deployer neu starten." },
     { name: "Docker", status: docker.docker ? "ok" : "warn", detail: docker.detail, action: docker.docker ? undefined : "Docker Desktop öffnen und Linux-Container verwenden. Recherche bleibt verfügbar." },

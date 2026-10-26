@@ -1,0 +1,15 @@
+import {mkdtemp,mkdir} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {APP_VERSION} from '../src/version';
+const rust=Bun.spawnSync(['rustc','-vV']);
+const triple=/host: (.+)/.exec(rust.stdout.toString())?.[1]?.trim();
+if(!triple)throw Error('Rust-Ziel fehlt.');
+const data=await mkdtemp(join(tmpdir(),'aklik-engine-verification-'));
+const result=Bun.spawnSync([join(process.cwd(),'src-tauri/binaries/aklik-engine-'+triple+(process.platform==='win32'?'.exe':'')),'--self-test'],{env:{...process.env,AKLIK_DEPLOYER_DATA_DIR:data},timeout:45000,stdout:'pipe',stderr:'pipe',windowsHide:true});
+if(result.exitCode)throw Error('Native Engine besteht den Selbsttest nicht.');
+const report=JSON.parse(result.stdout.toString().trim());
+if(!report.passed||report.version!==APP_VERSION)throw Error('Native Engine hat falsche Version oder keinen Erfolgsnachweis.');
+await mkdir('src-tauri/target/release/bundle',{recursive:true});
+await Bun.write('src-tauri/target/release/bundle/engine-self-test.json',JSON.stringify({...report,triple,checkedAt:new Date().toISOString()},null,2));
+console.log(JSON.stringify({passed:true,version:APP_VERSION,triple}));

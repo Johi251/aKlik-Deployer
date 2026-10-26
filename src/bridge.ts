@@ -1,3 +1,4 @@
+import {APP_VERSION} from './version';
 import {pendingScan, repositoryRef, scanRepository, type RepositoryScan} from './repository-scan';
 
 export function createBridge(port:number, scan=scanRepository){
@@ -11,7 +12,7 @@ export function createBridge(port:number, scan=scanRepository){
     if(origin){headers['Access-Control-Allow-Origin']=origin;headers['Access-Control-Allow-Methods']='GET, OPTIONS';headers['Access-Control-Allow-Private-Network']='true';}
     if(request.method==='OPTIONS')return new Response(null,{status:204,headers});
     if(request.method!=='GET')return json({error:'Die Status-Bridge ist ausschließlich lesend.'},405);
-    if(url.pathname==='/bridge/v1/health')return json({name:'aKlik-Deployer',version:'1.0.0',status:'ok',protocol:'aklik-deployer.status.v1'});
+    if(url.pathname==='/bridge/v1/health')return json({name:'aKlik-Deployer',version:APP_VERSION,status:'ok',protocol:'aklik-deployer.status.v1'});
     if(url.pathname!=='/bridge/v1/status')return json({error:'Nicht gefunden.'},404);
     try{
       const key=repositoryRef(url.searchParams.get('url')??'').url,existing=cache.get(key);

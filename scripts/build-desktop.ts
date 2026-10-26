@@ -1,3 +1,4 @@
+import {APP_VERSION} from '../src/version';
 import {mkdir,readdir} from "node:fs/promises";
 import {join,resolve} from "node:path";
 import {createHash} from "node:crypto";
@@ -18,5 +19,5 @@ if(!compile.success)throw Error(compile.logs.map(x=>x.message).join("\n"));
 if(process.argv.includes('--sidecar')){console.log(JSON.stringify({sidecar:exe}));process.exit(0);}
 const bytes=new Uint8Array(await Bun.file(exe).arrayBuffer()),parts=[];
 for(let offset=0,index=0;offset<bytes.length;offset+=8_000_000,index++){const chunk=bytes.slice(offset,offset+8_000_000),name="aklik-deployer-windows.part"+index;await Bun.write(join(out,name),chunk);parts.push({name,bytes:chunk.length,sha256:createHash("sha256").update(chunk).digest("hex")});}
-const manifest={version:"1.0.0",platform:"Windows x64",signed:false,bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex"),parts};
+const manifest={version:APP_VERSION,platform:"Windows x64",signed:false,bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex"),parts};
 await Bun.write(join(out,"windows.json"),JSON.stringify(manifest,null,2));console.log(JSON.stringify({exe,bytes:bytes.length,parts:parts.length,sha256:manifest.sha256}));

@@ -5,6 +5,8 @@ import { buildAgentPackage } from "../agent-package";
 import { setupExperience } from "./experience";
 import {setupDashboard,renderDashboard} from './dashboard';
 import {setupCompanion,shareAnalysis} from "./companion";
+import {applicationPath} from './paths';
+import {readiness,shareableDiagnostics,type DiagnosticReport} from '../readiness';
 const onlineEdition = document.body.dataset.mode === "online";
 if (onlineEdition) document.getElementById("edition-location")!.textContent = "In deinem Browser";
 type PublicAnalysis = Omit<Analysis, "files">;
@@ -14,7 +16,7 @@ const el = <K extends keyof HTMLElementTagNameMap>(tag: K, text?: string, cls?: 
   const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (cls) node.className = cls; return node;
 };
 function link(text: string, url: string): HTMLAnchorElement {
-  const a = el("a", text); a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer"; return a;
+  const a = el("a", text); a.href = url.startsWith('/')&&!url.startsWith('//')?applicationPath(url):url; a.target = "_blank"; a.rel = "noopener noreferrer"; return a;
 }
 function error(e: unknown): void { $("notice").textContent = e instanceof Error ? e.message : String(e); $("notice").hidden = false; }
 async function api<T>(path: string, body?: unknown): Promise<T> {
@@ -375,10 +377,25 @@ async function refreshLibrary(): Promise<void> {
   if (!state.searches.length) history.append(el("p", "Noch keine Recherche vorhanden.", "subline")); refreshComparison();
 }
 async function refreshDiagnostics(): Promise<void> {
-  const button = $<HTMLButtonElement>("refresh-diagnostics"); button.disabled = true; $("diagnostic-list").textContent = "Lokale Voraussetzungen werden geprüft …";
-  try { const data = await api<{ checkedAt: string; checks: { name: string; status: string; detail: string; action?: string }[] }>("/api/diagnostics"); const box = $("diagnostic-list"); box.replaceChildren(el("p", "Prüfstand: " + new Date(data.checkedAt).toLocaleString("de-DE"), "subline")); for (const check of data.checks) { const row = el("div", undefined, "diagnostic-row"); row.append(badge(check.status === "ok" ? "Bereit" : "Hinweis", check.status === "ok" ? "green" : "amber"), el("strong", check.name), el("p", check.detail)); if (check.action) row.append(callout(check.action, "warn")); box.append(row); } }
-  finally { button.disabled = false; }
+  const button=$<HTMLButtonElement>('refresh-diagnostics'),download=$<HTMLButtonElement>('download-diagnostics');
+  button.disabled=true;download.disabled=true;diagnosticReport=undefined;
+  $('diagnostic-readiness').replaceChildren();$('diagnostic-list').textContent='Voraussetzungen werden geprüft …';
+  try {
+    const data=await api<DiagnosticReport>('/api/diagnostics');diagnosticReport=data;
+    const ready=$('diagnostic-readiness');ready.append(el('h2','Was kannst du jetzt nutzen?'));
+    for(const item of readiness(data)){const row=el('div',undefined,'diagnostic-row');row.append(badge(item.status==='ready'?'Verfügbar':'Einrichtung nötig',item.status==='ready'?'green':'amber'),el('strong',item.name),el('p',item.detail));ready.append(row);}
+    const box=$('diagnostic-list');box.replaceChildren(el('h2','Prüfergebnisse'),el('p','Prüfstand: '+new Date(data.checkedAt).toLocaleString('de-DE'),'subline'));
+    for(const check of data.checks){const row=el('div',undefined,'diagnostic-row');row.append(badge(check.status==='ok'?'Bereit':'Hinweis',check.status==='ok'?'green':'amber'),el('strong',check.name),el('p',check.detail));if(check.action)row.append(callout(check.action,'warn'));box.append(row);}
+    download.disabled=false;
+  }catch(e){$('diagnostic-list').textContent='Prüfung nicht abgeschlossen. Bitte erneut versuchen.';throw e;}
+  finally{button.disabled=false;}
 }
+let diagnosticReport:DiagnosticReport|undefined;
+$('download-diagnostics').addEventListener('click',()=>{
+  if(!diagnosticReport)return;
+  const url=URL.createObjectURL(new Blob([JSON.stringify(shareableDiagnostics(diagnosticReport),null,2)],{type:'application/json'}));
+  const a=el('a');a.href=url;a.download='aklik-deployer-pruefbericht.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);
+});
 $("refresh-diagnostics").addEventListener("click", () => { void refreshDiagnostics().catch(error); });
 async function init(): Promise<void> {
   if (onlineEdition) { $("online-edition").hidden = false; }

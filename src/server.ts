@@ -1,4 +1,5 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
+import {APP_VERSION} from './version';
 import {createBridge} from './bridge';
 import { motionStyleHash } from "./motion-policy";
 import { search } from "./search";
@@ -65,7 +66,7 @@ export function createApp(port = 43110, embedded:Record<string,string>={}) {
             return new Response(content, { headers: { ...headers, "Content-Type": format === "md" ? "text/markdown; charset=utf-8" : "application/json; charset=utf-8", "Content-Disposition": `attachment; filename="aklik-deployer-recherche-${id.slice(0, 8)}.${format}"` } });
           }
           if (url.pathname.startsWith("/api/project/")) return json(await projectLogs(url.pathname.slice("/api/project/".length)));
-          if (url.pathname === "/api/health") return json({ name: "aKlik-Deployer", version: "1.0.0", status: "ok" });
+          if (url.pathname === "/api/health") return json({ name: "aKlik-Deployer", version: APP_VERSION, status: "ok" });
         }
         if (request.method !== "POST") return json({ error: "Nicht gefunden." }, 404);
         const body = await request.json() as Record<string, unknown>;

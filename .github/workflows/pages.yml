@@ -1,0 +1,37 @@
+name: Publish GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - uses: actions/configure-pages@v5
+      - run: bun install --frozen-lockfile
+      - run: bun install --frozen-lockfile
+        working-directory: integrations/bookmarks-manager
+      - run: bun run check && bun test && bun run release:web && bun run verify:artifacts
+        env:
+          AKLIK_WEB_BASE: /aKlik-Deployer/
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: sites/aklik-deployer-online/dist
+      - uses: actions/deploy-pages@v4
+        id: deployment
