@@ -36,11 +36,13 @@ for(const browser of ['chrome','firefox'])await add('Browser-Erweiterungen/bookm
 await add('Lesezeichen/aklik-deployer-bookmarks.html',join(out,'aklik-deployer-bookmarks.txt'));
 for(const [name,bytes]of Object.entries(source))if(name.startsWith('docs/'))files['Dokumentation/'+name.slice(5)]=bytes;
 for(const [name,path]of [['THIRD_PARTY_NOTICES.md','THIRD_PARTY_NOTICES.md'],['licenses.txt','public/licenses.txt'],['LICENSE','LICENSE'],['bun-LICENSE.md','.data/releases/bun-LICENSE.md']])await add('Lizenzen/'+name,join(root,path!));
-files['START-AKLIK.cmd']=new TextEncoder().encode('@echo off\r\nstart "" "%~dp0Windows\aKlik-Deployer-portable.exe"\r\n');
+files['START-AKLIK.cmd']=new TextEncoder().encode('@echo off\r\nstart "" "%~dp0Windows\\aKlik-Deployer-portable.exe"\r\n');
 files['ZUERST-LESEN.txt']=new TextEncoder().encode(`aKlik-Deployer ${APP_VERSION} – Gesamtpaket\n\nWindows: START-AKLIK.cmd öffnet die portable lokale App.\nEigenes Programmfenster: Windows/${setup} installieren.\nMac: passende DMG unter macOS/ öffnen (aarch64 = Apple Silicon, x64 = Intel).\nHandbuch: Dokumentation/Benutzerhandbuch.pdf oder .html öffnen.\nErweiterungen: ZIP entpacken und nach Handbuch laden.\nQuellcode: Quellcode/aKlik-Deployer-Quellcode.zip entpacken.\nWeb-Demo auf GitHub: https://johi251.github.io/aKlik-Deployer/\nKommerzielle Hosting-Variante: https://aklik-deployer.pages.dev\nUpdates: https://github.com/Johi251/aKlik-Deployer/releases\n\nDiagnose & Hilfe zeigt verfügbare Funktionen und fehlende Voraussetzungen.\nWindows unsigniert, Mac nicht notarisiert, Firefox temporär ladbar.\nNative Bedienung ist durch die Engine-Selbsttests nicht bewiesen.\nDocker-Funktionen benötigen eine lokale Docker-Installation.\nKeine persönlichen Daten, Schlüssel oder node_modules enthalten.\nFremdlizenzen: Dokumentation/KOMMERZIELLE-NUTZUNG.md.\n`);
 const sums=Object.entries(files).sort(([a],[b])=>a.localeCompare(b)).map(([name,data])=>createHash('sha256').update(data).digest('hex')+'  '+name).join('\n')+'\n';
 files['SHA256SUMS.txt']=new TextEncoder().encode(sums);
 const zip=zipSync(files,zipOptions),check=unzipSync(zip);
+const launcher=new TextDecoder().decode(check['START-AKLIK.cmd']);
+if(!launcher.includes('\r\n')||!launcher.includes('Windows\\aKlik-Deployer-portable.exe'))throw Error('Windows-Startdatei enthält einen falschen Programmpfad.');
 for(const line of sums.trim().split('\n')){const hash=line.slice(0,64),name=line.slice(66);if(!check[name]||createHash('sha256').update(check[name]!).digest('hex')!==hash)throw Error('Release-Prüfsumme falsch: '+name);}
 const name=`aKlik-Deployer-Gesamtpaket-${APP_VERSION}.zip`,digest=createHash('sha256').update(zip).digest('hex');
 await Bun.write(join(out,name),zip);
